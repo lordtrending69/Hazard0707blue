@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>HAZARD 7007 · Blue</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10243b;--blue:#168cff;--blue2:#39b5ff;--text:#edf6ff;--muted:#8ba6c2;--line:#1c3857}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;min-height:100%;background:radial-gradient(ellipse at 50% -20%,#12345a 0%,var(--bg) 55%);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none;touch-action:pan-y}
+body{padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);max-width:560px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 4px 14px}
+.brand{font-size:12px;letter-spacing:2.5px;color:var(--blue2);font-weight:800}
+h1{font-size:21px;letter-spacing:2px;margin:3px 0 0}
+.badge{font-size:10px;color:#9fcfff;border:1px solid #24517a;padding:7px 9px;border-radius:20px}
+.card{background:linear-gradient(145deg,#10243a,#0a1728);border:1px solid var(--line);border-radius:20px;padding:17px;margin:12px 0;box-shadow:0 12px 32px #0005}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.label{font-size:10px;letter-spacing:1.6px;color:var(--muted);font-weight:700}
+.value{font-size:22px;font-weight:800}
+.power{width:100%;border:1px solid #1d5a8c;background:#0b2742;color:#dff3ff;border-radius:14px;padding:15px;font-weight:800;letter-spacing:1.5px;font-size:13px}
+.power.on{background:linear-gradient(90deg,#0877d8,#159fff);border-color:#4bb8ff;color:white}
+.meter{height:7px;border-radius:20px;background:#1a3048;overflow:hidden;margin-top:13px}
+.meter span{display:block;height:100%;width:35%;background:linear-gradient(90deg,#0877d8,#48c4ff);border-radius:20px}
+input[type=range]{width:100%;accent-color:var(--blue);margin:15px 0 2px}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.mode{min-height:62px;border-radius:13px;border:1px solid #234362;background:#0a192a;color:#c9e4ff;font-weight:800;letter-spacing:1px}
+.mode.active{background:linear-gradient(145deg,#0878d8,#07559e);border-color:#42b6ff;color:white;box-shadow:0 0 18px #168cff45}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.control{border:1px solid #234362;background:#0a192a;color:#d9ecff;border-radius:13px;padding:14px;font-weight:800}
+.control:active,.mode:active{transform:scale(.985)}
+.stop{width:100%;margin-top:12px;padding:15px;border-radius:13px;border:1px solid #24517a;background:#102b47;color:#8ecbff;font-weight:900;letter-spacing:2px}
+.note{font-size:11px;line-height:1.5;color:#89a4bf;text-align:center;padding:8px 14px 18px}
+.admin{font-size:12px;color:#8ecbff;text-decoration:underline;background:none;border:0;padding:8px}
+.hidden{display:none!important}
+.field{width:100%;padding:12px;border:1px solid #284967;border-radius:11px;background:#071525;color:white;margin:8px 0}
+.linkrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}
+.linkrow code{word-break:break-all;color:#8ed0ff}
+footer{text-align:center;color:#58718b;font-size:10px;padding:10px}
+</style>
+</head>
+<body>
+<header><div><div class="brand">PREMIER SYSTEMS</div><h1>HAZARD 7007</h1></div><div class="badge">BLUE EDITION</div></header>
+<section class="card">
+ <div class="row"><div><div class="label">ПИТАНИЕ</div><div class="value" id="powerState">ВЫКЛЮЧЕНО · OFF</div></div><button class="power" id="power">ВКЛЮЧИТЬ</button></div>
+ <div class="row" style="margin-top:20px"><span class="label">УРОВЕНЬ</span><b id="level">35%</b></div><div class="meter"><span id="meter"></span></div>
+</section>
+<section class="card">
+ <div class="row"><span class="label">ГРОМКОСТЬ</span><b class="value" id="volText">35%</b></div>
+ <input id="volume" type="range" min="0" max="100" value="35" aria-label="Громкость">
+ <div class="row"><span class="label">РЕЖИМ</span><b id="modeState">STANDBY</b></div>
+ <div class="modes">
+  <button class="mode" data-mode="HI-LO">HI-LO</button><button class="mode" data-mode="YELP">YELP</button><button class="mode" data-mode="WAIL">WAIL</button>
+  <button class="mode active" data-mode="STANDBY">STANDBY</button><button class="mode" data-mode="PA">PA</button><button class="mode" data-mode="RADIO">RADIO</button>
+ </div>
+ <div class="controls"><button class="control" id="man">MAN · УДЕРЖИВАЙ</button><button class="control" id="horn">HORN · УДЕРЖИВАЙ</button></div>
+ <button class="stop" id="stop">СТОП</button>
+</section>
+<div class="note" id="status">Демонстрационный интерфейс. Управление звуковыми устройствами пока не подключено.</div>
+<section class="card">
+ <div class="row"><span class="label">ДОСТУП</span><button class="admin" id="adminToggle">Панель администратора</button></div>
+ <div id="adminPanel" class="hidden">
+  <div id="adminLogin"><p class="label">ВХОД ТОЛЬКО ДЛЯ ВЛАДЕЛЬЦА</p><input class="field" id="adminPassword" type="password" placeholder="Пароль владельца" autocomplete="current-password"><button class="power" id="loginAdmin">ВОЙТИ</button></div>
+  <div id="adminTools" class="hidden"><p class="note" style="text-align:left;padding:5px 0">Создавай приглашение и отправляй его одному человеку. После активации ссылка сгорает, а доступ сохраняется в этом браузере. Отозвать доступ можно ниже.</p>
+   <button class="power" id="createLink">СОЗДАТЬ ОДНОРАЗОВУЮ ССЫЛКУ</button><div id="linkResult" class="linkrow" style="margin-top:12px"></div>
+   <p class="label" style="margin-top:18px">УСТРОЙСТВА С ДОСТУПОМ</p><div id="deviceList" class="note" style="text-align:left;padding:8px 0"></div>
+   <button class="admin" id="refreshAdmin">ОБНОВИТЬ СПИСОК</button> <button class="admin" id="logoutAdmin">ВЫЙТИ ИЗ ПАНЕЛИ</button>
+  </div><div id="adminMessage" class="note"></div>
+ </div>
+</section>
+<footer>HAZARD 7007 · BLUE EDITION · ФИКСИРОВАННЫЙ ЭКРАН</footer>
+<script>
+const $=s=>document.querySelector(s);
+let on=false, mode='STANDBY';
+$('#power').onclick=()=>{on=!on;$('#power').textContent=on?'ВЫКЛЮЧИТЬ':'ВКЛЮЧИТЬ';$('#power').classList.toggle('on',on);$('#powerState').textContent=on?'ВКЛЮЧЕНО · ON':'ВЫКЛЮЧЕНО · OFF';$('#status').textContent=on?'Питание включено. Это визуальный прототип — аудиовыход не подключён.':'Питание выключено.'};
+$('#volume').oninput=e=>{$('#volText').textContent=e.target.value+'%';$('#level').textContent=e.target.value+'%';$('#meter').style.width=e.target.value+'%'};
+document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{if(!on){$('#status').textContent='Сначала включи питание.';return}mode=b.dataset.mode;$('#modeState').textContent=mode;document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('active',x===b));$('#status').textContent='Выбран режим '+mode+'. Звуковое управление не подключено.'});
+$('#stop').onclick=()=>{mode='STANDBY';$('#modeState').textContent=mode;document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));$('#status').textContent='Режим остановлен.'};
+['man','horn'].forEach(id=>{const b=$('#'+id);b.onpointerdown=()=>{if(on)$('#status').textContent='Кнопка удерживается. Аудиофункция не подключена.'};['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,()=>{if(on)$('#status').textContent='Кнопка отпущена.'}))});
+$('#adminToggle').onclick=()=>$('#adminPanel').classList.toggle('hidden');
+async function api(path,opts={}){const r=await fetch(path,{...opts,headers:{'Content-Type':'application/json',...(opts.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Ошибка сервера');return d}
+async function loadAdmin(){try{await api('/api/admin/me');$('#adminLogin').classList.add('hidden');$('#adminTools').classList.remove('hidden');const d=await api('/api/devices');$('#deviceList').replaceChildren();if(!d.devices.length)$('#deviceList').textContent='Пока нет активированных устройств.';d.devices.forEach(x=>{const row=document.createElement('div');row.style.cssText='padding:9px 0;border-bottom:1px solid #1c3857';const label=document.createElement('span');label.textContent=`${x.id.slice(0,8)} · ${x.revoked_at?'ОТОЗВАН':'АКТИВЕН'} · вход ${new Date(x.last_seen).toLocaleString()}`;row.append(label);if(!x.revoked_at){const b=document.createElement('button');b.className='admin';b.textContent='ОТОЗВАТЬ';b.onclick=async()=>{await api('/api/devices/'+encodeURIComponent(x.id)+'/revoke',{method:'POST',body:'{}'});loadAdmin()};row.append(b)}$('#deviceList').append(row)})}catch{$('#adminLogin').classList.remove('hidden');$('#adminTools').classList.add('hidden')}}
+$('#loginAdmin').onclick=async()=>{try{await api('/api/admin/login',{method:'POST',body:JSON.stringify({password:$('#adminPassword').value})});$('#adminMessage').textContent='Вход выполнен.';loadAdmin()}catch(e){$('#adminMessage').textContent=e.message}};
+$('#createLink').onclick=async()=>{try{const d=await api('/api/invite',{method:'POST',body:'{}'});const out=$('#linkResult');out.replaceChildren();const a=document.createElement('a');a.href=d.url;a.textContent=d.url;a.style.cssText='color:#8ed0ff;word-break:break-all';out.append(a);const c=document.createElement('button');c.className='admin';c.textContent='КОПИРОВАТЬ';c.onclick=()=>navigator.clipboard.writeText(d.url);out.append(c)}catch(e){$('#adminMessage').textContent=e.message}};
+$('#refreshAdmin').onclick=loadAdmin;$('#logoutAdmin').onclick=async()=>{await api('/api/admin/logout',{method:'POST',body:'{}'});loadAdmin()};
+(async()=>{const invite=new URLSearchParams(location.search).get('invite');if(invite){try{await api('/api/activate',{method:'POST',body:JSON.stringify({invite})});history.replaceState({},'',location.pathname);$('#status').textContent='Доступ активирован в этом браузере.'}catch(e){document.body.innerHTML='<main style="padding:40px;text-align:center;color:white"><h2>Ссылка недействительна</h2><p>'+e.message+'</p></main>';return}}try{await api('/api/member');$('#status').textContent='Доступ подтверждён для этого браузера.'}catch{document.querySelectorAll('section.card').forEach((el,i)=>{if(i<2)el.classList.add('hidden')});$('#status').textContent='Нет пользовательского доступа. Для входа владельца открой панель администратора.'}loadAdmin()})();
+</script>
+</body></html>

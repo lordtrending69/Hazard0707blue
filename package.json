@@ -1,0 +1,9 @@
+{
+  "name": "hazard-7007-blue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Blue HAZARD 7007 interface with owner-managed single-use invitations",
+  "scripts": {"start": "node server.js"},
+  "engines": {"node": ">=20"},
+  "dependencies": {"better-sqlite3": "^11.8.1", "express": "^4.21.2"}
+}
